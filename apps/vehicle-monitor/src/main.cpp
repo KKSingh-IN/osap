@@ -14,9 +14,32 @@
 */
 
 #include <iostream>
+#include <csignal>
+#include <unistd.h>
+
+volatile sig_atomic_t g_signal_status = 0;
+
+void signal_handler(int signal) {
+    g_signal_status = signal;
+}
+
+int main(int argc, char *argv[]) {
+
+    std::signal(SIGINT, signal_handler);
+    std::signal(SIGTERM, signal_handler);
 
 
-int main(int argc, char *argv[])
-{
+    while (g_signal_status == 0) {
+        std::cout << "Alive..." << std::endl;
+        sleep(1);
+    }
+
+    std::cout << std::endl;
+    if (g_signal_status == SIGINT) {
+        std::cout << "SIGINT received" << std::endl;
+    } else if (g_signal_status == SIGTERM) {
+        std::cout << "SIGTERM received" << std::endl;
+    }
+
     return 0;
 }
