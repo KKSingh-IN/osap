@@ -8,7 +8,14 @@ Open Source Automotive Platform - A POSIX based Automotive software development 
 
 ## Getting Started
 
-(Instructions for setting up and using OSAP will be added as the project develops)
+### Configure the build for a specific application with options
+./setup.py --app vehicle-monitor --configure --build-type Release --use-vsomeip --use-mqtt
+
+### Build a specific application
+./setup.py --app vehicle-monitor --build
+
+### Run tests for a specific application
+./setup.py --app vehicle-monitor --test
 
 ## Contributing
 
