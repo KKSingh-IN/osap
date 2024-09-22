@@ -17,6 +17,8 @@
 #include <csignal>
 #include <unistd.h>
 
+#include "vehicle_monitor.h"
+
 volatile sig_atomic_t g_signal_status = 0;
 
 void signal_handler(int signal) {
@@ -28,6 +30,11 @@ int main(int argc, char *argv[]) {
     std::signal(SIGINT, signal_handler);
     std::signal(SIGTERM, signal_handler);
 
+    MultiProtocolReader app;
+    app.start();
+
+    std::this_thread::sleep_for(std::chrono::seconds(60));
+    app.stop();
 
     while (g_signal_status == 0) {
         std::cout << "Alive..." << std::endl;
