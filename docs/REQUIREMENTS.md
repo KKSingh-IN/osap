@@ -17,7 +17,7 @@ limitations under the License.
 
 # Automotive Application Requirements
 
-This document outlines the system-level and software requirements for the sample vehicle monitor application, focusing on automotive communication.
+This document outlines the system-level requirements for the automotive application, specifically addressing communication.
 
 ## 1. General System Requirements
 
@@ -70,16 +70,16 @@ This document outlines the system-level and software requirements for the sample
 * **REQ-MQTT-005: Secure Connection (TLS/SSL):** The application shall support secure MQTT connections using TLS/SSL.
 * **REQ-MQTT-006: Reconnection Logic:** The MQTT client shall implement robust automatic reconnection logic in case of network interruptions.
 
-## UDS (Unified Diagnostic Services) over CAN/DoIP (Diagnostics over IP):
+## 3. UDS (Unified Diagnostic Services) over CAN/DoIP (Diagnostics over IP):
 * **REQ-UDS-001: The application shall demonstrate basic UDS services**
 
-## 3. Testing:
+## 4. Testing:
 
 * **REQ-TEST-001: Unit Tests:** Each major component and communication module shall have dedicated unit tests.
 * **REQ-TEST-002: Integration Tests:** Integration tests shall verify end-to-end communication flows across different protocols.
 * **REQ-TEST-003: Simulation Environment:** The project shall include a basic simulation environment to test communication protocols without physical hardware.
 
-## 4. Documentation:
+## 5. Documentation:
 
 * **REQ-DOC-001: Architecture Documentation:** The project shall include documentation outlining the overall system architecture and design choices.
 * **REQ-DOC-002: API Documentation:** All exposed APIs for communication modules shall be clearly documented.
