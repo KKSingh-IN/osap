@@ -17,6 +17,31 @@
 #include <iostream>
 #include <chrono>
 
+namespace vehicle_monitor{
+
+std::thread VehicleMonitor::thread1_;
+volatile sig_atomic_t VehicleMonitor::g_signal_status;
+sigset_t VehicleMonitor::signals{};
+
+VehicleMonitor::VehicleMonitor() {
+
+}
+
+VehicleMonitor::~VehicleMonitor() {
+
+}
+
+void VehicleMonitor::SignalHandler() {
+    sigfillset(&signals);
+    pthread_sigmask(SIG_BLOCK, &signals, nullptr);
+    thread1_ = std::thread([&] () {
+        int sig;
+        if(0 == sigwait(&signals, &sig))
+        {
+            g_signal_status = 1;
+        }
+    });
+}
 // Dummy implementations of protocol clients
 class CANClientImpl : public CANClientBase {
 public:
@@ -249,3 +274,5 @@ void MultiProtocolReader::processData() {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
+
+} // namespace vehicle_monitor

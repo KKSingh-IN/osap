@@ -14,39 +14,25 @@
 */
 
 #include <iostream>
-#include <csignal>
 #include <unistd.h>
 
 #include "vehicle_monitor.h"
 
-volatile sig_atomic_t g_signal_status = 0;
-
-void signal_handler(int signal) {
-    g_signal_status = signal;
-}
 
 int main(int argc, char *argv[]) {
 
-    std::signal(SIGINT, signal_handler);
-    std::signal(SIGTERM, signal_handler);
+    /*Set main thread name for debugging purpose*/
+    pthread_setname_np(pthread_self(), "vehicle_monitor_main");
 
-    MultiProtocolReader app;
+    vehicle_monitor::VehicleMonitor::SignalHandler();
+
+    vehicle_monitor::MultiProtocolReader app;
     app.start();
 
-    std::this_thread::sleep_for(std::chrono::seconds(60));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     app.stop();
 
-    while (g_signal_status == 0) {
-        std::cout << "Alive..." << std::endl;
-        sleep(1);
-    }
-
-    std::cout << std::endl;
-    if (g_signal_status == SIGINT) {
-        std::cout << "SIGINT received" << std::endl;
-    } else if (g_signal_status == SIGTERM) {
-        std::cout << "SIGTERM received" << std::endl;
-    }
+    vehicle_monitor::VehicleMonitor::thread1_.join();
 
     return 0;
 }

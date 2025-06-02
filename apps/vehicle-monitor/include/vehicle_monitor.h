@@ -24,6 +24,31 @@
 #include <mutex>
 #include <condition_variable>
 #include <thread>
+#include <pthread.h>
+#include <csignal>
+
+namespace vehicle_monitor{
+
+class VehicleMonitor{
+public:
+    VehicleMonitor();
+
+    /// @brief Delete copy constructor
+    VehicleMonitor(const VehicleMonitor&) = delete;
+
+    /// @brief Delete copy assignment operator
+    VehicleMonitor& operator=(const VehicleMonitor&) = delete;
+
+    ~VehicleMonitor();
+
+    /// @brief Handle interrupt signal
+    static void SignalHandler();
+
+    static std::thread thread1_;
+private:
+    static volatile sig_atomic_t g_signal_status;
+    static sigset_t signals;
+};
 
 // Abstract base classes for protocol clients
 class CANClientBase {
@@ -141,6 +166,8 @@ public:
 private:
     void processData();
 };
+
+} // namespace vehicle_monitor
 
 
 #endif
