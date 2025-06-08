@@ -20,13 +20,6 @@
 #include <unistd.h>
 #include <errno.h>
 
-#include <net/if.h>
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-
-#include <linux/can.h>
-#include <linux/can/raw.h>
-
 #include "can_receiver.h"
 
 int initialize_can_socket(const char *ifname)
@@ -69,52 +62,45 @@ int initialize_can_socket(const char *ifname)
     return sock_;
 }
 
-int receive_can_frames(int sock_)
+int receive_can_frames(int sock_, struct can_frame *frame)
 {
-    struct can_frame frame;
-    int nbytes;
+    int ret = E_NOT_OK;
 
-    if (sock_ < 0)
+    if (NULL != frame)
     {
-        fprintf(stderr, "Error: Invalid socket descriptor passed to receive_can_frames.\n");
-        return 1;
-    }
+        int nbytes;
 
-    printf("Listening for CAN frames...\n");
+        if (sock_ < 0)
+        {
+            fprintf(stderr, "Error: Invalid socket descriptor passed to receive_can_frames.\n");
+            return E_NOT_OK;
+        }
 
-    while (1)
-    { // Loop indefinitely to receive frames
-        nbytes = read(sock_, &frame, sizeof(struct can_frame));
+        printf("Listening for CAN frames...\n");
+        nbytes = read(sock_, frame, sizeof(struct can_frame));
 
         if (nbytes < 0)
         {
             if (errno == EINTR)
-            { // Interrupted system call, try again
-                continue;
+            {
+                // Interrupted system call, try again
             }
             perror("Read error on CAN socket");
-            return 1; // Critical read error
         }
         else if (nbytes == 0)
         {
             // End of file (shouldn't happen with sockets unless closed by peer)
             fprintf(stderr, "Read returned 0 bytes (socket possibly closed by peer).\n");
-            break; // Exit loop
         }
         else if (nbytes < sizeof(struct can_frame))
         {
             fprintf(stderr, "Partial CAN frame received: %d bytes. Expected %lu.\n", nbytes, sizeof(struct can_frame));
-            continue; // Continue to next read
         }
-
-        // Print the received CAN frame
-        printf("0x%03X [%d] ", frame.can_id, frame.can_dlc);
-        for (int i = 0; i < frame.can_dlc; i++)
+        else
         {
-            printf("%02X ", frame.data[i]);
+            ret = E_OK;
         }
-        printf("\n"); // Use newline instead of \r\n for better cross-platform console behavior
     }
 
-    return 0; // Normal exit from loop (e.g., if socket was closed by peer)
+    return ret;
 }

@@ -17,6 +17,14 @@
 #ifndef CAN_UTILS_H
 #define CAN_UTILS_H
 
+#include <net/if.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <linux/can.h>
+#include <linux/can/raw.h>
+
+#include "osap_common.h"
+
 /**
  * @brief Initializes a CAN socket and binds it to a specified interface.
  *
@@ -48,6 +56,6 @@ int initialize_can_socket(const char *ifname);
  * though the loop is intended to be infinite in typical use).
  * Returns 1 if a critical read error occurs.
  */
-int receive_can_frames(int sock_);
+int receive_can_frames(int sock_, struct can_frame *frame);
 
 #endif // CAN_UTILS_H
