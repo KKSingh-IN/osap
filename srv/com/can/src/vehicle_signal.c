@@ -2,7 +2,7 @@
 #include <string.h>
 
 
-SignalDefinition signals[] = {
+struct SignalDefinition signals[] = {
     {
         .name = "EngineRPM",
         .can_id = 0x1A0,

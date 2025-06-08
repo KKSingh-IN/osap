@@ -19,4 +19,4 @@ struct SignalDefinition
     char unit[MAX_UNIT_NAME_LENGTH];
 };
 
-#endif VEHICLE_SIGNAL_H
+#endif
