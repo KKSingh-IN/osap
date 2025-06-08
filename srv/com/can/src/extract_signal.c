@@ -17,21 +17,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "extract_signal.h"
+
 // Using 'ULL' for unsigned long long literal to ensure 64-bit operation.
 #define MASK64(nbits) ((nbits) == 0 ? 0ULL : (0xFFFFFFFFFFFFFFFFULL >> (64 - (nbits))))
 
-/**
- * @brief Extracts a bitfield signal from a byte array.
- *
- * This function extracts a 'length' bit signal starting at 'startbit'
- * from a byte 'frame', handling both big-endian and little-endian systems.
- *
- * @param frame A pointer to the array of bytes of CAN frame
- * @param startbit The 0-indexed starting bit position of the signal within the frame.
- * @param length The length of the signal in bits (max 64 for uint64_t).
- * @param is_big_endian True if the frame data is big-endian, false for little-endian.
- * @return The extracted signal as a uint64_t. Returns 0 for invalid lengths.
- */
 uint64_t extractSignal(const uint8_t *frame, uint16_t startbit, uint8_t length, bool is_big_endian)
 {
     // Input Validation
