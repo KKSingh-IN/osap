@@ -17,8 +17,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
+#include "vehicle_signal.h"
 #include "can_receiver.h"
+#include "extract_signal.h"
+
+extern struct SignalDefinition signals[];
+extern const int NUM_SIGNALS;
+
+void sleep_ms(int milliseconds)
+{
+    struct timespec ts;
+    ts.tv_sec = milliseconds / 1000;
+    ts.tv_nsec = (milliseconds % 1000) * 1000000;
+    nanosleep(&ts, NULL);
+}
 
 /**
  * @brief Main function for the CAN frame listener application.
@@ -38,6 +52,7 @@ int main(int argc, char **argv)
 {
     int sock_ = -1;
     const char *ifname = "vcan0"; // Default interface name
+    struct can_frame frame;
 
     // Parse command-line arguments
     if (argc > 2)
@@ -58,14 +73,30 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    // Start receiving CAN frames
-    int receive_status = receive_can_frames(sock_);
 
+    // Start receiving CAN frames
+    while (1)
+    {
+        int receive_status = receive_can_frames(sock_, &frame);
+        uint64_t sig_val = 0;
+
+        if (E_OK == receive_status)
+        {
+            for (int i = 0; i < NUM_SIGNALS; ++i)
+            {
+                if (frame.can_id == signals[i].can_id)
+                {
+                    sig_val = extractSignal((const uint8_t *)&frame.data, signals[i].start_bit, signals[i].length, signals[i].is_big_endian);
+                }
+            }
+        }
+        sleep_ms(100);
+    }
     // Clean up: Close the socket
     if (close(sock_) < 0)
     {
         perror("Error closing CAN socket");
         return 1; // Indicate error during close
     }
-    return receive_status;
+    return 0;
 }
