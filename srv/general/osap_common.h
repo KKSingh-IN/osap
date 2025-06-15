@@ -6,4 +6,4 @@
 #define E_NOT_OK 1U
 
 
-#endif OSAP_COMMON_H
+#endif
