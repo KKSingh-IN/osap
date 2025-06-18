@@ -1,0 +1,35 @@
+/*Copyright 2025 Kamlesh Singh
+*
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
+*
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
+*/
+
+#ifndef COMMON_FRAMEWORK_ISTATE_MACHINE_HPP
+#define COMMON_FRAMEWORK_ISTATE_MACHINE_HPP
+
+#include "IState.hpp" // For IState definition
+#include <map>
+#include <vector>
+#include <string>
+
+// Interface for the state machine
+template<typename StateEnum, typename EventEnum>
+class IStateMachine {
+public:
+    virtual ~IStateMachine() = default;
+    virtual void addState(StateEnum type, std::unique_ptr<IState<StateEnum, EventEnum>> state) = 0;
+    virtual void transitionTo(StateEnum newStateEnum) = 0;
+    virtual void handleEvent(EventEnum event) = 0;
+    virtual StateEnum getCurrentState() const = 0;
+};
+
+#endif // COMMON_FRAMEWORK_ISTATE_MACHINE_HPP
