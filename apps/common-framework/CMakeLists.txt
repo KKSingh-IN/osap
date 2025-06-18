@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cmake_minimum_required(VERSION 3.15)
+project(common-framework VERSION 1.0)
+
 add_library(common-framework SHARED
     Application.cpp
     signals/SignalBus.cpp
     state/CommonApplicationStates.cpp
     state/StateMachine.cpp
 )
-
 
 target_include_directories(common-framework PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR} # common-framework/
