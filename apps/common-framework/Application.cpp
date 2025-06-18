@@ -157,5 +157,5 @@ void Application<ConcreteApp>::addCommonStates()
 }
 
 // Explicit instantiation of the Application template for common usage
-#include "../vehicle-control/VehicleControlApp.hpp" // Include ConcreteApp header for instantiation
-template class Application<MyVehicleControlApp>;
+#include "../vehicle-control/src/VehicleControlApp.hpp" // Include ConcreteApp header for instantiation
+template class Application<VehicleControlApp>;
