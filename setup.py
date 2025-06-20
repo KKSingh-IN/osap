@@ -20,6 +20,19 @@ import subprocess
 import sys
 
 def run_command(command, cwd=None):
+    """
+    Executes a shell command and captures its output.
+
+    Args:
+        command (str): The command to execute.
+        cwd (str, optional): The current working directory for the command. Defaults to None.
+
+    Returns:
+        str: The standard output of the command.
+
+    Raises:
+        SystemExit: If the command returns a non-zero exit code (indicating an error).
+    """
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=cwd)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
@@ -29,10 +42,24 @@ def run_command(command, cwd=None):
     return stdout.decode()
 
 def get_available_apps():
+    """
+    Discovers available applications in the 'apps' directory.
+
+    Returns:
+        list: A list of directory names, each representing an available application.
+    """
     apps_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apps")
     return [d for d in os.listdir(apps_dir) if os.path.isdir(os.path.join(apps_dir, d))]
 
 def configure_build(app, build_type, options):
+    """
+    Configures the CMake build for a specified application.
+
+    Args:
+        app (str): The name of the application to configure.
+        build_type (str): The CMake build type (e.g., "Debug", "Release").
+        options (dict): A dictionary of CMake options (e.g., {"USE_VSOMEIP": "ON"}).
+    """
     app_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apps", app)
     build_dir = os.path.join(app_dir, "build")
     os.makedirs(build_dir, exist_ok=True)
@@ -45,6 +72,12 @@ def configure_build(app, build_type, options):
     run_command(cmake_command, cwd=build_dir)
 
 def build_project(app):
+    """
+    Builds the specified application using CMake.
+
+    Args:
+        app (str): The name of the application to build.
+    """
     app_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apps", app)
     build_dir = os.path.join(app_dir, "build")
     
@@ -55,11 +88,20 @@ def build_project(app):
     run_command("cmake --build .", cwd=build_dir)
 
 def run_tests(app):
+    """
+    Runs CTest for the specified application.
+
+    Args:
+        app (str): The name of the application to test.
+    """
     app_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apps", app)
     build_dir = os.path.join(app_dir, "build")
     run_command("ctest --output-on-failure", cwd=build_dir)
 
 def main():
+    """
+    Main function to parse command-line arguments and orchestrate the build and test process.
+    """
     available_apps = get_available_apps()
 
     parser = argparse.ArgumentParser(description="Setup and build helper for Automotive Applications")
@@ -84,12 +126,17 @@ def main():
         "USE_MAC": "ON" if args.use_mac else "OFF",
     }
 
+    # Determine if configuration is needed:
+    # 1. If --configure flag is explicitly set.
+    # 2. If --build is set and the CMakeCache.txt file (indicating a configured build) is missing.
     if args.configure or (args.build and not os.path.exists(os.path.join("apps", args.app, "build", "CMakeCache.txt"))):
         configure_build(args.app, args.build_type, options)
 
+    # Perform the build if requested
     if args.build:
         build_project(args.app)
 
+    # Run tests if requested
     if args.test:
         run_tests(args.app)
 
