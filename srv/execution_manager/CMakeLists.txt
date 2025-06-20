@@ -32,7 +32,7 @@ target_sources(ExecutionManager PRIVATE
 
 target_include_directories(ExecutionManager PRIVATE
     ${CMAKE_SOURCE_DIR}/src
-    ${CMAKE_SOURCE_DIR}/../../general
+    ${CMAKE_SOURCE_DIR}/../general
 )
 
 target_link_libraries(ExecutionManager PRIVATE

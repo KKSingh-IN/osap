@@ -109,24 +109,23 @@ def build_common_libs_and_apps(build_type):
         build_type (str): The CMake build type (e.g., "Debug", "Release").
     """
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    srv_com_dir = os.path.join(script_dir, "srv", "com")
+    srv_dir = os.path.join(script_dir, "srv")
 
-    if not os.path.isdir(srv_com_dir):
-        print(f"Warning: '{srv_com_dir}' not found. Skipping common libraries and applications build.")
+    if not os.path.isdir(srv_dir):
+        print(f"Warning: '{srv_dir}' not found. Skipping build process.")
         return
 
-    print(f"\n--- Building common libraries and applications in '{srv_com_dir}' ---")
+    print(f"\n--- Building applications in '{srv_dir}' ---")
 
-    for item in os.listdir(srv_com_dir):
-        item_path = os.path.join(srv_com_dir, item)
-        if os.path.isdir(item_path):
-            # Check if it's a CMake project by looking for CMakeLists.txt
-            if os.path.exists(os.path.join(item_path, "CMakeLists.txt")):
-                print(f"\nProcessing common project: {item}")
-                configure_build(item, item_path, build_type, {})
-                build_project(item, item_path)
-            else:
-                print(f"Skipping '{item}' in 'srv/': No CMakeLists.txt found.")
+    for item in os.listdir(srv_dir):
+        item_path = os.path.join(srv_dir, item)
+        # Check if it's a directory and contains a CMakeLists.txt
+        if os.path.isdir(item_path) and os.path.exists(os.path.join(item_path, "CMakeLists.txt")):
+            print(f"\nProcessing project: {item}")
+            configure_build(item, item_path, build_type, {})
+            build_project(item, item_path)
+        else:
+            print(f"Skipping '{item}': Not a CMake project or not a directory directly in 'srv/'.")
 
 def main():
     """
