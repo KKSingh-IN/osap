@@ -20,12 +20,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
-option(BUILD_TESTS "Build the tests" ON)
-option(USE_VSOMEIP "Use SOME/IP" ON)
-option(USE_MQTT "Use MQTT" ON)
-option(USE_CAN "Use CAN" ON)
-option(USE_HTTPS "Use HTTPS" ON)
-option(USE_MAC "Use MAC" ON)
+option(BUILD_TESTS "Build the tests" OFF)
+option(USE_VSOMEIP "Use SOME/IP" OFF)
+option(USE_MQTT "Use MQTT" OFF)
+option(USE_CAN "Use CAN" OFF)
+option(USE_HTTPS "Use HTTPS" OFF)
+option(USE_MAC "Use MAC" OFF)
 
 
 include(FetchContent)

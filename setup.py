@@ -110,20 +110,10 @@ def main():
     parser.add_argument("--build", action="store_true", help="Build the project")
     parser.add_argument("--test", action="store_true", help="Run tests")
     parser.add_argument("--build-type", choices=["Debug", "Release", "RelWithDebInfo"], default="Debug", help="Build type")
-    parser.add_argument("--use-vsomeip", action="store_true", help="Use SOME/IP")
-    parser.add_argument("--use-mqtt", action="store_true", help="Use MQTT")
-    parser.add_argument("--use-can", action="store_true", help="Use CAN")
-    parser.add_argument("--use-https", action="store_true", help="Use HTTPS")
-    parser.add_argument("--use-mac", action="store_true", help="Use MAC")
 
     args = parser.parse_args()
 
     options = {
-        "USE_VSOMEIP": "ON" if args.use_vsomeip else "OFF",
-        "USE_MQTT": "ON" if args.use_mqtt else "OFF",
-        "USE_CAN": "ON" if args.use_can else "OFF",
-        "USE_HTTPS": "ON" if args.use_https else "OFF",
-        "USE_MAC": "ON" if args.use_mac else "OFF",
     }
 
     # Determine if configuration is needed:

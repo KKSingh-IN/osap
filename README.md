@@ -9,7 +9,7 @@ Open Source Automotive Platform - A POSIX based Automotive software development 
 ## Getting Started
 
 ### Configure the build for a specific application with options
-./setup.py --app vehicle-monitor --configure --build-type Release --use-vsomeip --use-mqtt
+./setup.py --app vehicle-monitor --configure --build-type Release
 
 ### Build a specific application
 ./setup.py --app vehicle-monitor --build
