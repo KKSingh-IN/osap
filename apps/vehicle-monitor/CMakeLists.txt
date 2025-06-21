@@ -19,53 +19,6 @@ project(VehicleMonitor VERSION 1.0)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-
-option(BUILD_TESTS "Build the tests" OFF)
-option(USE_VSOMEIP "Use SOME/IP" OFF)
-option(USE_MQTT "Use MQTT" OFF)
-option(USE_CAN "Use CAN" OFF)
-option(USE_HTTPS "Use HTTPS" OFF)
-option(USE_MAC "Use MAC" OFF)
-
-
-include(FetchContent)
-
-
-function(add_module NAME)
-    add_library(${NAME} STATIC
-        ../../src/${NAME}/${NAME}.cpp
-        ../../include/${NAME}/${NAME}.h
-    )
-    target_include_directories(${NAME} PUBLIC ../../include/${NAME})
-endfunction()
-
-
-
-if(USE_VSOMEIP)
-    FetchContent_Declare(
-        vsomeip
-        GIT_REPOSITORY https://github.com/GENIVI/vsomeip.git
-        GIT_TAG 3.1.20.3
-    )
-    FetchContent_MakeAvailable(vsomeip)
-endif()
-
-if(USE_MQTT)
-    find_package(PahoMqttCpp REQUIRED)
-endif()
-
-if(USE_CAN)
-    find_package(SocketCAN REQUIRED)
-endif()
-
-if(USE_HTTPS)
-    find_package(OpenSSL REQUIRED)
-endif()
-
-if(USE_MAC)
-
-endif()
-
 add_executable(${PROJECT_NAME} 
     src/main.cpp
     src/vehicle_monitor.cpp
@@ -75,25 +28,5 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/i
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-
 )
 
-if(USE_VSOMEIP)
-    target_link_libraries(${PROJECT_NAME} PRIVATE vsomeip)
-endif()
-
-if(USE_MQTT)
-    target_link_libraries(${PROJECT_NAME} PRIVATE PahoMqttCpp::paho-mqttpp3)
-endif()
-
-if(USE_CAN)
-    target_link_libraries(${PROJECT_NAME} PRIVATE SocketCAN::SocketCAN)
-endif()
-
-if(USE_HTTPS)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
-endif()
-
-if(USE_MAC)
-
-endif()
