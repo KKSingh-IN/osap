@@ -33,13 +33,15 @@ def run_command(command, cwd=None):
     Raises:
         SystemExit: If the command returns a non-zero exit code (indicating an error).
     """
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=cwd)
+    print(f"\n[DEBUG] Executing command: {command} in directory: {cwd}\n")
+    # process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, cwd=cwd)
+    process = subprocess.Popen(command, stdout=None, stderr=None, shell=True, cwd=cwd)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
         print(f"Error executing command: {command}")
         print(stderr.decode())
         sys.exit(1)
-    return stdout.decode()
+    # return stdout.decode()
 
 def get_available_apps():
     """
@@ -87,7 +89,7 @@ def build_project(project_name, project_path):
         configure_build(project_name, project_path, "Debug", {}) # Default to Debug for unconfigured common projects
 
     print(f"Building {project_name} in {build_dir}...")
-    run_command("cmake --build .", cwd=build_dir)
+    run_command("cmake --build . --verbose", cwd=build_dir)
 
 def run_tests(project_name, project_path):
     """
@@ -116,13 +118,17 @@ def build_common_libs_and_apps(build_type):
         return
 
     print(f"\n--- Building applications in '{srv_dir}' ---")
+    
+    common_srv_options = {
+        "ENABLE_CPPCHECK": "ON"
+    }
 
     for item in os.listdir(srv_dir):
         item_path = os.path.join(srv_dir, item)
         # Check if it's a directory and contains a CMakeLists.txt
         if os.path.isdir(item_path) and os.path.exists(os.path.join(item_path, "CMakeLists.txt")):
             print(f"\nProcessing project: {item}")
-            configure_build(item, item_path, build_type, {})
+            configure_build(item, item_path, build_type, common_srv_options)
             build_project(item, item_path)
         else:
             print(f"Skipping '{item}': Not a CMake project or not a directory directly in 'srv/'.")
@@ -150,6 +156,7 @@ def main():
     args = parser.parse_args()
 
     options = {
+        "ENABLE_CPPCHECK": "ON"
     }
 
     # Step 1: Build common libraries and applications automatically
